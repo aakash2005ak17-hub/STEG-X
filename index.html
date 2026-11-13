@@ -1,12 +1,143 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>STEG-X | Multi-Media Steganography</title><link rel="stylesheet" href="/static/style.css"></head>
-<body><header><div class="brand"><span class="mark">SX</span><div><b>STEG-X</b><small>ADVANCED STEGANOGRAPHY LAB</small></div></div><span class="status">● LOCAL / ONLINE LAB</span></header>
-<main><section class="hero"><div class="eyebrow">MULTI-MEDIA SECURITY TOOLKIT</div><h1>Hide in plain <em>sight.</em></h1><p>Embed, recover and examine concealed data across media formats in a controlled forensic workspace.</p><div class="chips"><span>IMAGE</span><span>AUDIO</span><span>VIDEO</span><span>TEXT</span><span>NETWORK</span><span>DOCUMENT</span></div></section>
-<nav class="tabs"><button class="active" data-tab="hide">Hide data</button><button data-tab="extract">Extract data</button><button data-tab="analyze">Forensic analysis</button></nav>
-<section class="panel" id="hide"><div class="panelhead"><div><small>ENCODING WORKSPACE</small><h2>Embed a secret message</h2></div><span class="number">01 / 03</span></div><form id="hideForm"><label>Media type<select name="kind"><option value="image">Image · PNG carrier</option><option value="audio">Audio · PCM WAV</option><option value="video">Video · frame LSB (AVI output)</option><option value="text">Text · invisible Unicode</option><option value="document">Document · PDF appended payload</option><option value="network">Network · UDP PCAP</option></select></label><label>Carrier file<input type="file" name="file" required></label><label>Secret message<textarea name="message" rows="4" placeholder="Type the message to embed..." required></textarea></label><button class="primary">Encode & download <span>↗</span></button></form><div class="result" id="hideResult"></div></section>
-<section class="panel hidden" id="extract"><div class="panelhead"><div><small>RECOVERY WORKSPACE</small><h2>Extract concealed data</h2></div><span class="number">02 / 03</span></div><form id="extractForm"><label>Media type<select name="kind"><option value="image">Image · PNG</option><option value="audio">Audio · PCM WAV</option><option value="video">Video · STEG-X AVI</option><option value="text">Text · invisible Unicode</option><option value="document">Document · PDF</option><option value="network">Network · PCAP</option></select></label><label>Encoded file<input type="file" name="file" required></label><button class="primary">Extract message <span>↗</span></button></form><div class="result" id="extractResult"></div></section>
-<section class="panel hidden" id="analyze"><div class="panelhead"><div><small>FORENSIC TRIAGE</small><h2>Inspect a suspicious file</h2></div><span class="number">03 / 03</span></div><form id="analyzeForm"><label>Evidence file<input type="file" name="file" required></label><button class="primary">Analyze file <span>↗</span></button></form><pre class="result" id="analyzeResult"></pre></section>
-<section class="notice"><b>Research / lab use</b><p>Use files you own or are authorized to examine. Detection metrics are preliminary indicators, not proof. This prototype does not implement robust commercial-grade steganalysis.</p></section></main>
-<footer>STEG-X <span>Educational research prototype · v1.0</span></footer><script src="/static/app.js"></script></body></html>
-<link rel="stylesheet" href="./style.css"><script src="./app.js"></script><script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1C1D20">
+  <title>STEG-X | Multimedia Steganography Lab</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./">
+      <span class="brand-mark">S</span>
+      <span>STEG<span class="accent">-X</span>
+        <small>MULTIMEDIA FORENSICS LAB</small>
+      </span>
+    </a>
+    <div class="status"><i></i> LOCAL BROWSER PROCESSING</div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div class="eyebrow">PRIVATE • CLIENT-SIDE • EXPERIMENTAL</div>
+      <h1>Hide in plain <span class="accent">sight.</span></h1>
+      <p>Explore multimedia steganography and basic forensic inspection. Files are processed locally in your browser; they are not uploaded to a server.</p>
+      <div class="hero-tags">
+        <span>IMAGE</span><span>AUDIO</span><span>VIDEO</span>
+        <span>DOCUMENT</span><span>TEXT</span><span>NETWORK FILE</span>
+      </div>
+    </section>
+
+    <section class="workspace">
+      <aside class="sidebar">
+        <div class="side-label">WORKSPACE</div>
+        <button class="nav-item active" data-module="image"><span>▧</span> Image <b>PNG</b></button>
+        <button class="nav-item" data-module="audio"><span>♫</span> Audio <b>WAV</b></button>
+        <button class="nav-item" data-module="video"><span>▶</span> Video <b>EXPERIMENTAL</b></button>
+        <button class="nav-item" data-module="document"><span>▤</span> Document <b>PDF</b></button>
+        <button class="nav-item" data-module="text"><span>¶</span> Text <b>UNICODE</b></button>
+        <button class="nav-item" data-module="network"><span>⌁</span> Network file <b>PCAP</b></button>
+        <div class="side-divider"></div>
+        <button class="nav-item" data-module="forensics"><span>⌕</span> Forensic analysis <b>SCAN</b></button>
+        <div class="sidebar-note">
+          <strong>Important</strong><br>
+          Use only files you own or are authorized to examine. This is an educational tool, not a certified forensic suite.
+        </div>
+      </aside>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <div class="eyebrow" id="module-kicker">IMAGE STEGANOGRAPHY</div>
+            <h2 id="module-title">PNG Image Lab</h2>
+          </div>
+          <span class="local-pill">● LOCAL ONLY</span>
+        </div>
+
+        <p class="module-desc" id="module-desc">
+          Embed a short message into PNG pixel data using least-significant-bit encoding, then extract it from the resulting PNG.
+        </p>
+
+        <div class="mode-tabs" id="mode-tabs">
+          <button class="mode-tab active" data-mode="encode">Encode / Hide</button>
+          <button class="mode-tab" data-mode="decode">Extract / Reveal</button>
+          <button class="mode-tab" data-mode="analyze">Analyze</button>
+        </div>
+
+        <div class="tool-content">
+          <div class="field" id="file-field">
+            <label for="file-input" id="file-label">SOURCE PNG IMAGE</label>
+            <label class="dropzone" for="file-input">
+              <span class="upload-icon">＋</span>
+              <strong id="drop-title">Choose a PNG file</strong>
+              <small id="drop-subtitle">Click to browse • PNG recommended</small>
+              <input id="file-input" type="file" accept="image/png">
+            </label>
+            <div class="file-meta" id="file-meta">No file selected</div>
+          </div>
+
+          <div class="field" id="message-field">
+            <label for="message-input">SECRET MESSAGE</label>
+            <textarea id="message-input" rows="4" placeholder="Type the message you want to hide..."></textarea>
+            <div class="hint">Text is converted to UTF-8 before embedding.</div>
+          </div>
+
+          <div class="field hidden" id="text-field">
+            <label for="plain-input">VISIBLE TEXT / COVER TEXT</label>
+            <textarea id="plain-input" rows="4" placeholder="Paste ordinary text here..."></textarea>
+          </div>
+
+          <div class="actions">
+            <button class="primary-btn" id="run-btn">Encode message <span>↗</span></button>
+            <button class="secondary-btn" id="clear-btn">Clear</button>
+          </div>
+
+          <div class="result hidden" id="result">
+            <div class="result-top">
+              <span class="result-icon">✓</span>
+              <div>
+                <strong id="result-title">Ready</strong>
+                <small id="result-desc"></small>
+              </div>
+            </div>
+            <div id="preview-area"></div>
+            <a class="download-btn hidden" id="download-link" href="#" download>
+              Download output <span>↓</span>
+            </a>
+          </div>
+
+          <div class="notice" id="notice">
+            Tip: Start with a small PNG and a short message. Keep an untouched copy of your original file.
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <section class="bottom-grid">
+      <article class="info-card">
+        <span class="card-number">01</span>
+        <h3>Local processing</h3>
+        <p>Your selected file stays in this browser tab. No upload endpoint is used.</p>
+      </article>
+      <article class="info-card">
+        <span class="card-number">02</span>
+        <h3>Know the limits</h3>
+        <p>Video and PCAP use an experimental trailing-payload demonstration, not robust packet/frame steganography.</p>
+      </article>
+      <article class="info-card">
+        <span class="card-number">03</span>
+        <h3>Forensic mindset</h3>
+        <p>Record hashes, preserve originals, document every action, and verify results independently.</p>
+      </article>
+    </section>
+
+    <footer>
+      STEG-X BROWSER EDITION
+      <span>EDUCATIONAL USE • 2026</span>
+    </footer>
+  </main>
+
+  <script src="./app.js"></script>
+</body>
+</html>
