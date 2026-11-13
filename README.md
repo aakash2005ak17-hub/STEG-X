@@ -1,56 +1,88 @@
-# STEG-X — Multi-Media Steganography Lab
+# STEG-X
 
-Educational research prototype for embedding, extracting and examining data in supported carrier formats.
+### Multi-Media Steganography & Digital Forensics Platform
 
-## Features in this starter
-- Image: PNG RGB LSB encode/decode.
-- Audio: uncompressed PCM WAV 16-bit LSB encode/decode.
-- Video: frame LSB with AVI/MJPEG output (OpenCV/FFmpeg required).
-- Text: invisible Unicode-character payload.
-- Documents: append/recover payload in PDF files.
-- Network: append/recover payload in a UDP packet inside a PCAP capture (Scapy).
-- Forensic triage: SHA-256, file signature, sampled byte entropy, printable ASCII ratio and marker check.
+STEG-X is a browser-based educational platform designed to demonstrate steganography techniques and basic digital forensic inspection.
 
-## Important limitations
-This is a learning prototype, not a production security product. Basic LSB is fragile and detectable; do not use it for real secrets. JPEG/MP3/MP4 lossy recompression can destroy payloads. Audio supports PCM WAV only. Video encoding outputs AVI/MJPEG to preserve the modified frame bits. Document support is PDF only. Network support is a controlled PCAP lab demonstration, not a covert-network tool. The forensic analyzer is heuristic and cannot prove that steganography is present or absent. There is no user authentication, upload persistence, malware scanning, rate limiting or production hardening.
+## Features
 
-## Run locally (Windows / macOS / Linux)
-1. Install Python 3.10 or newer.
-2. Install FFmpeg if you plan to use video.
-3. Create and activate a virtual environment:
-   - Windows: `py -m venv .venv` then `.venv\Scripts\activate`
-   - macOS/Linux: `python3 -m venv .venv` then `source .venv/bin/activate`
-4. Install dependencies: `pip install -r requirements.txt`
-5. Start: `python app.py`
-6. Open `http://127.0.0.1:5000`
+### Image Steganography
+- PNG image encoding
+- RGB Least Significant Bit (LSB)
+- Hidden message extraction
+- Encoded image download
 
-For Scapy PCAP support, install Npcap on Windows if needed. No live packet capture is performed; upload a PCAP file you are authorized to inspect.
+### Audio Steganography
+- WAV audio encoding
+- 16-bit PCM LSB technique
+- Hidden message extraction
+- Encoded audio download
 
-## Deploy online
-This Flask app can be deployed to a Python host such as Render:
-1. Push this folder to a GitHub repository.
-2. In Render, create a new Web Service and connect the repository.
-3. Render can detect `render.yaml`; use build command `pip install -r requirements.txt` and start command `gunicorn wsgi:app`.
-4. Set a 100 MB upload limit or lower it to suit your host.
-5. Test with non-sensitive sample files.
+### Video Steganography
+- Experimental appended-payload demonstration
+- Payload extraction
 
-Online hosting is a shared server environment. Do not upload confidential evidence or real secrets. Use HTTPS, authentication, malware scanning, strict size limits, request timeouts, isolated processing, logging controls and a security review before any public launch. For safer use, keep sensitive work local.
+### Document Steganography
+- PDF appended-payload demonstration
+- Payload extraction
 
-## Suggested test files
-- PNG image, PCM 16-bit WAV, short MP4 video, UTF-8 text file, sample PDF, and a PCAP containing at least one UDP packet.
-- Start with short messages and keep an untouched copy of every original carrier.
+### Text Steganography
+- Invisible Unicode characters
+- Hidden message encoding
+- Message extraction
 
-## Project structure
-```
-stegx/
-  __init__.py
-  core.py
-  routes.py
-  templates/index.html
-  static/style.css
-  static/app.js
-app.py
-wsgi.py
-requirements.txt
-render.yaml
-```
+### Network Steganography
+- Experimental PCAP/PCAPNG appended-payload demonstration
+- Payload extraction
+
+### Digital Forensics
+- SHA-256 hash calculation
+- File metadata inspection
+- Entropy calculation
+- STEG-X marker detection
+- Forensic report generation
+
+## Technology Stack
+
+- HTML5
+- CSS3
+- JavaScript
+- Web Crypto API
+- Canvas API
+
+## Live Website
+
+https://aakash2005ak17-hub.github.io/STEG-X/
+
+## Installation
+
+1. Clone this repository.
+2. Open the project folder.
+3. Open `index.html` in a modern browser.
+
+No backend installation is required.
+
+## Important Limitations
+
+STEG-X is an educational browser-based demonstration.
+
+- Image encoding supports PNG files.
+- Audio encoding supports 16-bit PCM WAV files.
+- Video and PDF modules use appended payloads, not true frame-level or PDF-object steganography.
+- Network module does not perform live packet capture or packet-level hiding.
+- Forensic analysis provides basic indicators, not definitive proof of hidden data.
+
+Do not use this tool as a substitute for professional forensic software.
+
+## Developer
+
+**Aakash R**
+
+Digital & Cyber Forensic Science Student  
+Aspiring Digital Forensic Analyst
+
+GitHub: https://github.com/aakash2005ak17-hub
+
+---
+
+**STEG-X — Explore. Embed. Extract. Investigate.**
