@@ -22,8 +22,8 @@ h1 em{background:linear-gradient(90deg,var(--y),#fff,var(--y));background-size:2
 .card{background:var(--c);border:1px solid var(--l);border-radius:22px;padding:20px;animation:up .5s both}
 .card small{font:11px ui-monospace,monospace;letter-spacing:.2em;color:var(--m)}h2{margin:4px 0 14px;font-size:24px}
 label{display:grid;gap:7px;font-weight:600;margin-bottom:15px}
-select,input[type=file],textarea{width:100%;padding:13px 14px;border-radius:13px;border:1px solid var(--l);background:#1a1b1f;color:var(--t);font:16px inherit;font-family:inherit;transition:.25s}
-select:focus,textarea:focus{outline:0;border-color:var(--y);box-shadow:0 0 0 4px #ffcc3326}input[type=file]{border-style:dashed}input[type=file]:hover{border-color:var(--y)}
+select,input[type=file],input[type=password],textarea{width:100%;padding:13px 14px;border-radius:13px;border:1px solid var(--l);background:#1a1b1f;color:var(--t);font:16px inherit;font-family:inherit;transition:.25s}
+select:focus,textarea:focus,input[type=password]:focus{outline:0;border-color:var(--y);box-shadow:0 0 0 4px #ffcc3326}input[type=file]{border-style:dashed}input[type=file]:hover{border-color:var(--y)}
 input[type=file]::file-selector-button{margin-right:12px;padding:9px 14px;border:0;border-radius:9px;background:var(--y);font-weight:700;cursor:pointer}
 textarea{min-height:100px;resize:vertical}
 #go{position:relative;overflow:hidden;width:100%;padding:15px;border:1px solid var(--l);border-radius:13px;background:#1a1b1f;color:var(--t);font:700 17px inherit;font-family:inherit;cursor:pointer;transition:.2s}
@@ -51,11 +51,13 @@ footer{text-align:center;padding:18px;color:var(--m);font:11px ui-monospace,mono
 <option value="image">Image · PNG</option><option value="audio">Audio · PCM WAV</option><option value="video">Video · uncompressed AVI</option>
 <option value="document">Document · PDF</option><option value="text">Text · invisible Unicode (.txt)</option><option value="network">Network · PCAP</option></select></label>
 <label>Carrier file<input type="file" id="file"></label>
-<label id="ml">Secret message<textarea id="msg" placeholder="Type the message to embed..."></textarea></label>
+<label id="ml">Secret message<textarea id="msg" placeholder="Type the message to embed..."></textarea><small id="cnt" style="color:var(--m)"></small></label>
+<label id="pl">Password (optional · AES-256 lock)<input type="password" id="pw" autocomplete="off" placeholder="Leave empty for no lock"></label>
 <button id="go">Encode &amp; download ↗</button>
+<button class="btn" id="clr" type="button" style="margin-top:12px">✕ Clear</button>
 <div class="res" id="out"></div></section>
 <div class="note"><b>Tips:</b> Share the output as a <b>Document / File</b> (not photo/video) in WhatsApp or Telegram, otherwise compression destroys the message. Use only files you own.</div>
-</main><footer>STEG-X · Educational research prototype · v2.1</footer>
+</main><footer>STEG-X · Educational research prototype · v3.0</footer>
 <script>
 const $=s=>document.querySelector(s),enc=new TextEncoder(),dec=new TextDecoder();
 let mode='hide';
@@ -88,6 +90,11 @@ v.setUint16(50,40000);v.setUint16(52,40001);v.setUint16(54,ul);p.set(pl,58);cons
 /* ---- text (zero-width) ---- */
 function txtEnc(t,m){if(!t)throw Error('Text file empty irukku.');let z='\u2063';for(const v of enc.encode(m))for(let k=7;k>=0;k--)z+=v>>k&1?'\u200c':'\u200b';return t.slice(0,1)+z+'\u2063'+t.slice(1)}
 function txtDec(t){const m=t.match(/\u2063([\u200b\u200c]+)\u2063/);if(!m)throw Error('Indha text-la hidden message illa.');const bits=[...m[1]],by=new Uint8Array(bits.length>>3);bits.forEach((c,i)=>{if(i>>3<by.length)by[i>>3]=by[i>>3]<<1|(c=='\u200c')});return dec.decode(by)}
+/* ---- password lock (AES-GCM) ---- */
+async function dkey(pw,salt){const k=await crypto.subtle.importKey('raw',enc.encode(pw),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:100000,hash:'SHA-256'},k,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}
+async function lock(m,pw){const s=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12)),c=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},await dkey(pw,s),enc.encode(m))),o=new Uint8Array(28+c.length);o.set(s);o.set(iv,16);o.set(c,28);return'ENC1:'+btoa(String.fromCharCode(...o))}
+async function unlock(t,pw){if(!t.startsWith('ENC1:'))return t;if(!pw)throw Error('Idhu password-protected message. Password type pannu.');const o=Uint8Array.from(atob(t.slice(5)),c=>c.charCodeAt(0));try{return dec.decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:o.slice(16,28)},await dkey(pw,o.slice(0,16)),o.slice(28)))}catch{throw Error('Password thappu.')}}
+async function cap(){const f=$('#file').files[0],k=kind.value,c=$('#cnt'),n=enc.encode($('#msg').value).length;if(mode!='hide'){c.textContent='';return}let t=0;try{if(f&&k=='image')t=(await px(f)).sl.total;else if(f&&(k=='audio'||k=='video')){const b=new Uint8Array(await f.arrayBuffer());t=(k=='audio'?wav(b):avi(b)).total}}catch{}c.textContent=n+' bytes'+(t?' / max '+((t>>3)-6)+' bytes':'')}
 /* ---- dispatch ---- */
 async function hide(k,f,m){
  if(k=='image'){const p=await px(f);put(p.rgb,p.sl,pay(m));for(let i=0,j=0;i<p.d.data.length;i+=4){p.d.data[i]=p.rgb[j++];p.d.data[i+1]=p.rgb[j++];p.d.data[i+2]=p.rgb[j++]}p.x.putImageData(p.d,0,0);return new Promise(r=>p.c.toBlob(r,'image/png'))}
@@ -114,23 +121,24 @@ async function analyze(f){const n=await sniff(f);let r=`Name: ${f.name}\nSize: $
  return r}
 /* ---- UI ---- */
 const kind=$('#kind');
-function sync(){const hide_=mode=='hide',an=mode=='analyze';$('#ml').style.display=hide_?'':'none';$('#kl').style.display=an?'none':'';
+function sync(){const hide_=mode=='hide',an=mode=='analyze';$('#ml').style.display=hide_?'':'none';$('#pl').style.display=an?'none':'';$('#pl').firstChild.textContent=hide_?'Password (optional · AES-256 lock)':'Password (message lock irundha)';$('#clr').style.display='';cap();$('#kl').style.display=an?'none':'';
  $('#file').accept='';$('#go').innerHTML=hide_?'Encode &amp; download ↗':an?'Analyze file ↗':'Extract message ↗';
  $('#sm').textContent=hide_?'ENCODING WORKSPACE':an?'FORENSIC TRIAGE':'RECOVERY WORKSPACE';$('#hd').textContent=hide_?'Embed a secret message':an?'Inspect a suspicious file':'Extract concealed data';
  $('#out').style.display='none';document.querySelectorAll('#chips span').forEach(s=>s.classList.toggle('on',s.dataset.k==kind.value));
  const c=$('#card');c.style.animation='none';c.offsetHeight;c.style.animation=''}
 document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{mode=b.dataset.m;document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x==b));sync()});
 Object.entries({image:'IMAGE',audio:'AUDIO',video:'VIDEO',document:'PDF',text:'TEXT',network:'PCAP'}).forEach(([k,v],i)=>{const s=document.createElement('span');s.textContent=v;s.dataset.k=k;s.style.animationDelay=.3+i*.08+'s';s.onclick=()=>{kind.value=k;if(mode=='analyze')$('.tabs button').click();sync()};$('#chips').append(s)});
-kind.onchange=()=>{$('#file').value='';sync()};
+kind.onchange=()=>{$('#file').value='';sync()};$('#file').onchange=cap;$('#msg').oninput=cap;
+$('#clr').onclick=()=>{$('#file').value='';$('#msg').value='';$('#pw').value='';$('#out').style.display='none';cap()};
 $('#go').onclick=async()=>{const f=$('#file').files[0],k=kind.value;if(!f)return say('Error: Carrier file select pannu.',1);
  try{say('Processing...<div class="bar"></div>');await new Promise(r=>setTimeout(r,60));
-  if(mode=='hide'){const m=$('#msg').value;if(!m)return say('Error: Secret message type pannu.',1);
+  if(mode=='hide'){let m=$('#msg').value;if(!m)return say('Error: Secret message type pannu.',1);const pw=$('#pw').value;if(pw)m=await lock(m,pw);
    const blob=new Blob([await hide(k,f,m)],{type:K[k][1]}),u=URL.createObjectURL(blob),name=K[k][0];
-   let ver;try{ver=await extract(k,new File([blob],name,{type:K[k][1]}));ver=ver===m?'<span class="tick">✓</span>Verified: encode correct, message extract aagudhu.':'⚠ Verify mismatch.'}catch(e){ver='⚠ Verify fail: '+esc(e.message)}
+   let ver;try{ver=await extract(k,new File([blob],name,{type:K[k][1]}));ver=ver===m?'<span class="tick">✓</span>Verified: encode correct, message extract aagudhu.'+(pw?' 🔒 Password lock ON.':''):'⚠ Verify mismatch.'}catch(e){ver='⚠ Verify fail: '+esc(e.message)}
    let pv=k=='image'?`<img src="${u}">`:k=='audio'?`<audio controls src="${u}"></audio>`:'';
    say(`${ver}${pv}<br><a class="btn" href="${u}" download="${name}">⬇ Download ${name}</a>${['document','text','network'].includes(k)||k=='image'?`<a class="btn" href="${u}" target="_blank">👁 View</a>`:''}${k=='video'?'<br><small>AVI browser-la play aagaadhu. VLC / MX Player-la paaru.</small>':''}`);
    const a=document.createElement('a');a.href=u;a.download=name;document.body.append(a);a.click();a.remove()}
-  else if(mode=='extract'){const m=await extract(k,f);say(`<span class="tick">✓</span>Hidden message:<div class="msg">${esc(m)}</div><button class="btn" id="cp">Copy</button>`);$('#cp').onclick=e=>{navigator.clipboard.writeText(m);e.target.textContent='Copied ✓'}}
+  else if(mode=='extract'){const m=await unlock(await extract(k,f),$('#pw').value);say(`<span class="tick">✓</span>Hidden message (${enc.encode(m).length} bytes):<div class="msg">${esc(m)}</div><button class="btn" id="cp">Copy</button><a class="btn" download="message.txt" href="data:text/plain;charset=utf-8,${encodeURIComponent(m)}">⬇ Save .txt</a>`);$('#cp').onclick=e=>{navigator.clipboard.writeText(m);e.target.textContent='Copied ✓'}}
   else say(`<pre>${esc(await analyze(f))}</pre>`)}
  catch(e){say('Error: '+esc(e.message),1)}};
 window.onerror=(m)=>say('Error: '+esc(String(m)),1);window.onunhandledrejection=e=>say('Error: '+esc(String(e.reason&&e.reason.message||e.reason)),1);
