@@ -1,143 +1,56 @@
 <!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#1C1D20">
-  <title>STEG-X | Multimedia Steganography Lab</title>
-  <link rel="stylesheet" href="./style.css">
-</head>
-<body>
-  <header class="topbar">
-    <a class="brand" href="./">
-      <span class="brand-mark">S</span>
-      <span>STEG<span class="accent">-X</span>
-        <small>MULTIMEDIA FORENSICS LAB</small>
-      </span>
-    </a>
-    <div class="status"><i></i> LOCAL BROWSER PROCESSING</div>
-  </header>
-
-  <main class="shell">
-    <section class="hero">
-      <div class="eyebrow">PRIVATE • CLIENT-SIDE • EXPERIMENTAL</div>
-      <h1>Hide in plain <span class="accent">sight.</span></h1>
-      <p>Explore multimedia steganography and basic forensic inspection. Files are processed locally in your browser; they are not uploaded to a server.</p>
-      <div class="hero-tags">
-        <span>IMAGE</span><span>AUDIO</span><span>VIDEO</span>
-        <span>DOCUMENT</span><span>TEXT</span><span>NETWORK FILE</span>
-      </div>
-    </section>
-
-    <section class="workspace">
-      <aside class="sidebar">
-        <div class="side-label">WORKSPACE</div>
-        <button class="nav-item active" data-module="image"><span>▧</span> Image <b>PNG</b></button>
-        <button class="nav-item" data-module="audio"><span>♫</span> Audio <b>WAV</b></button>
-        <button class="nav-item" data-module="video"><span>▶</span> Video <b>EXPERIMENTAL</b></button>
-        <button class="nav-item" data-module="document"><span>▤</span> Document <b>PDF</b></button>
-        <button class="nav-item" data-module="text"><span>¶</span> Text <b>UNICODE</b></button>
-        <button class="nav-item" data-module="network"><span>⌁</span> Network file <b>PCAP</b></button>
-        <div class="side-divider"></div>
-        <button class="nav-item" data-module="forensics"><span>⌕</span> Forensic analysis <b>SCAN</b></button>
-        <div class="sidebar-note">
-          <strong>Important</strong><br>
-          Use only files you own or are authorized to examine. This is an educational tool, not a certified forensic suite.
-        </div>
-      </aside>
-
-      <section class="panel">
-        <div class="panel-head">
-          <div>
-            <div class="eyebrow" id="module-kicker">IMAGE STEGANOGRAPHY</div>
-            <h2 id="module-title">PNG Image Lab</h2>
-          </div>
-          <span class="local-pill">● LOCAL ONLY</span>
-        </div>
-
-        <p class="module-desc" id="module-desc">
-          Embed a short message into PNG pixel data using least-significant-bit encoding, then extract it from the resulting PNG.
-        </p>
-
-        <div class="mode-tabs" id="mode-tabs">
-          <button class="mode-tab active" data-mode="encode">Encode / Hide</button>
-          <button class="mode-tab" data-mode="decode">Extract / Reveal</button>
-          <button class="mode-tab" data-mode="analyze">Analyze</button>
-        </div>
-
-        <div class="tool-content">
-          <div class="field" id="file-field">
-            <label for="file-input" id="file-label">SOURCE PNG IMAGE</label>
-            <label class="dropzone" for="file-input">
-              <span class="upload-icon">＋</span>
-              <strong id="drop-title">Choose a PNG file</strong>
-              <small id="drop-subtitle">Click to browse • PNG recommended</small>
-              <input id="file-input" type="file" accept="image/png">
-            </label>
-            <div class="file-meta" id="file-meta">No file selected</div>
-          </div>
-
-          <div class="field" id="message-field">
-            <label for="message-input">SECRET MESSAGE</label>
-            <textarea id="message-input" rows="4" placeholder="Type the message you want to hide..."></textarea>
-            <div class="hint">Text is converted to UTF-8 before embedding.</div>
-          </div>
-
-          <div class="field hidden" id="text-field">
-            <label for="plain-input">VISIBLE TEXT / COVER TEXT</label>
-            <textarea id="plain-input" rows="4" placeholder="Paste ordinary text here..."></textarea>
-          </div>
-
-          <div class="actions">
-            <button class="primary-btn" id="run-btn">Encode message <span>↗</span></button>
-            <button class="secondary-btn" id="clear-btn">Clear</button>
-          </div>
-
-          <div class="result hidden" id="result">
-            <div class="result-top">
-              <span class="result-icon">✓</span>
-              <div>
-                <strong id="result-title">Ready</strong>
-                <small id="result-desc"></small>
-              </div>
-            </div>
-            <div id="preview-area"></div>
-            <a class="download-btn hidden" id="download-link" href="#" download>
-              Download output <span>↓</span>
-            </a>
-          </div>
-
-          <div class="notice" id="notice">
-            Tip: Start with a small PNG and a short message. Keep an untouched copy of your original file.
-          </div>
-        </div>
-      </section>
-    </section>
-
-    <section class="bottom-grid">
-      <article class="info-card">
-        <span class="card-number">01</span>
-        <h3>Local processing</h3>
-        <p>Your selected file stays in this browser tab. No upload endpoint is used.</p>
-      </article>
-      <article class="info-card">
-        <span class="card-number">02</span>
-        <h3>Know the limits</h3>
-        <p>Video and PCAP use an experimental trailing-payload demonstration, not robust packet/frame steganography.</p>
-      </article>
-      <article class="info-card">
-        <span class="card-number">03</span>
-        <h3>Forensic mindset</h3>
-        <p>Record hashes, preserve originals, document every action, and verify results independently.</p>
-      </article>
-    </section>
-
-    <footer>
-      STEG-X BROWSER EDITION
-      <span>EDUCATIONAL USE • 2026</span>
-    </footer>
-  </main>
-
-  <script src="./app.js"></script>
-</body>
-</html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>STEG-X | Steganography Lab</title>
+<style>
+:root{--bg:#17181c;--c:#222328;--l:#3a3b42;--t:#f3f3f1;--m:#9a9ba3;--y:#fc3;--g:#5ad39a}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--t);min-height:100vh;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:-20%;z-index:-1;background:radial-gradient(40% 35% at 20% 20%,#ffcc3324,transparent 70%),radial-gradient(35% 30% at 85% 70%,#5ad39a1a,transparent 70%);animation:dr 14s ease-in-out infinite alternate}
+@keyframes dr{to{transform:translate3d(6%,4%,0) scale(1.1)}}@keyframes up{from{opacity:0;transform:translateY(20px)}}@keyframes pop{from{opacity:0;transform:scale(.5)}}
+@keyframes sh{to{background-position:200% center}}@keyframes pl{50%{opacity:.35;transform:scale(1.5)}}@keyframes sw{to{transform:translateX(300%)}}@keyframes ld{0%{left:-40%}100%{left:100%}}
+header{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--l);background:#17181cd9;backdrop-filter:blur(8px);position:sticky;top:0;z-index:5;animation:up .6s both}
+.br{display:flex;gap:12px;align-items:center}.mk{width:42px;height:42px;border-radius:13px;background:var(--y);color:#222;display:grid;place-items:center;font-weight:800;transition:.4s}.br:hover .mk{transform:rotate(-10deg) scale(1.1)}
+.br b{letter-spacing:.2em;font-size:18px;display:block}.br small{font-size:9px;letter-spacing:.28em;color:var(--m)}
+.st{font:11px ui-monospace,monospace;color:var(--g)}.st i{display:inline-block;width:7px;height:7px;border-radius:9px;background:var(--g);margin-right:6px;animation:pl 1.6s infinite}
+main{max-width:720px;margin:auto;padding:18px 14px 40px}.hero>*{animation:up .7s both}
+.ey{font:11px ui-monospace,monospace;letter-spacing:.22em;color:var(--y)}h1{font-size:clamp(32px,9vw,52px);margin:8px 0;line-height:1.05;animation-delay:.1s!important}
+h1 em{background:linear-gradient(90deg,var(--y),#fff,var(--y));background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:sh 3.5s linear infinite}
+.hero p{color:var(--m);line-height:1.6;animation-delay:.2s!important}
+.ch{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0}.ch span{font:11px ui-monospace,monospace;padding:6px 11px;border:1px solid var(--l);border-radius:99px;color:var(--m);animation:pop .5s both;transition:.25s;cursor:pointer}
+.ch span:hover,.ch span.on{background:var(--y);color:#222;border-color:var(--y);transform:translateY(-3px)}
+.tabs{display:flex;gap:5px;padding:5px;background:var(--c);border:1px solid var(--l);border-radius:14px;margin:18px 0 14px;animation:up .7s .3s both}
+.tabs button{flex:1;padding:11px 4px;border:0;border-radius:10px;background:0;color:var(--m);font:600 14px inherit;font-family:inherit;cursor:pointer;transition:.3s}.tabs button.on{background:var(--y);color:#222;box-shadow:0 6px 18px #ffcc3347}
+.card{background:var(--c);border:1px solid var(--l);border-radius:22px;padding:20px;animation:up .5s both}
+.card small{font:11px ui-monospace,monospace;letter-spacing:.2em;color:var(--m)}h2{margin:4px 0 14px;font-size:24px}
+label{display:grid;gap:7px;font-weight:600;margin-bottom:15px}
+select,input[type=file],textarea{width:100%;padding:13px 14px;border-radius:13px;border:1px solid var(--l);background:#1a1b1f;color:var(--t);font:16px inherit;font-family:inherit;transition:.25s}
+select:focus,textarea:focus{outline:0;border-color:var(--y);box-shadow:0 0 0 4px #ffcc3326}input[type=file]{border-style:dashed}input[type=file]:hover{border-color:var(--y)}
+input[type=file]::file-selector-button{margin-right:12px;padding:9px 14px;border:0;border-radius:9px;background:var(--y);font-weight:700;cursor:pointer}
+textarea{min-height:100px;resize:vertical}
+#go{position:relative;overflow:hidden;width:100%;padding:15px;border:1px solid var(--l);border-radius:13px;background:#1a1b1f;color:var(--t);font:700 17px inherit;font-family:inherit;cursor:pointer;transition:.2s}
+#go:before{content:"";position:absolute;top:0;left:-60%;width:30%;height:100%;background:linear-gradient(100deg,transparent,#ffcc3340,transparent);transform:translateX(-100%)}
+#go:hover{transform:translateY(-3px);border-color:var(--y)}#go:hover:before{animation:sw 1s}#go:active{transform:scale(.97)}
+.res{display:none;margin-top:16px;padding:14px;border:1px solid var(--l);border-radius:14px;background:#1a1b1f;line-height:1.6;word-break:break-word;animation:up .4s both}
+.res.err{border-color:#ff6b6b;color:#ffb3b3}.res pre{white-space:pre-wrap;font:13px ui-monospace,monospace;margin:0;color:var(--y)}
+.tick{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--g);color:#111;margin-right:8px;animation:pop .5s both}
+.msg{margin:10px 0;padding:12px;border-radius:10px;background:#111216;color:var(--y);font:15px ui-monospace,monospace;white-space:pre-wrap}
+.res img{max-width:100%;border-radius:12px;margin:10px 0;animation:pop .5s both}.res audio{width:100%;margin:10px 0}
+.btn{display:inline-block;margin:6px 8px 0 0;padding:10px 15px;border-radius:10px;border:1px solid var(--y);background:0;color:var(--y);font:600 14px inherit;font-family:inherit;text-decoration:none;cursor:pointer;transition:.2s}.btn:hover{background:var(--y);color:#222;transform:translateY(-2px)}
+.bar{position:relative;height:4px;border-radius:4px;background:#333;overflow:hidden;margin-top:8px}.bar:after{content:"";position:absolute;top:0;height:100%;width:40%;background:var(--y);animation:ld 1s linear infinite}
+.note{margin-top:20px;padding:16px 18px;border:1px solid var(--l);border-left:4px solid var(--y);border-radius:14px;background:var(--c);color:var(--m);line-height:1.6;font-size:14px}.note b{color:var(--y)}
+footer{text-align:center;padding:18px;color:var(--m);font:11px ui-monospace,monospace;border-top:1px solid var(--l)}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+</style></head><body>
+<header><div class="br"><span class="mk">SX</span><div><b>STEG-X</b><small>STEGANOGRAPHY LAB</small></div></div><span class="st"><i></i>LOCAL · PRIVATE</span></header>
+<main>
+<section class="hero"><div class="ey">MULTI-MEDIA SECURITY TOOLKIT</div><h1>Hide in plain <em>sight.</em></h1>
+<p>Files stay in your browser. Nothing is uploaded to any server.</p>
+<div class="ch" id="chips"></div></section>
+<nav class="tabs"><button class="on" data-m="hide">Hide data</button><button data-m="extract">Extract</button><button data-m="analyze">Analyze</button></nav>
+<section class="card" id="card"><small id="sm">ENCODING WORKSPACE</small><h2 id="hd">Embed a secret message</h2>
+<label id="kl">Media type<select id="kind">
+<option value="image">Image · PNG</option><option value="audio">Audio · PCM WAV</option><option value="video">Video · uncompressed AVI</option>
+<option value="document">Document · PDF</option><option value="text">Text · invisible Unicode (.txt)</option><option value="network">Network · PCAP</option></select></label>
+<label>Carrier file<input type="file" id="file"></label>
+<label id="ml">Secret message<textarea id="msg" placeholder="Type the message to embed..."></textarea></label>
+<button id="go">Encode &amp; download ↗</button>
+<div class="res" id="out"></div></section>
