@@ -38,6 +38,12 @@ textarea{min-height:100px;resize:vertical}
 .bar{position:relative;height:4px;border-radius:4px;background:#333;overflow:hidden;margin-top:8px}.bar:after{content:"";position:absolute;top:0;height:100%;width:40%;background:var(--y);animation:ld 1s linear infinite}
 .note{margin-top:20px;padding:16px 18px;border:1px solid var(--l);border-left:4px solid var(--y);border-radius:14px;background:var(--c);color:var(--m);line-height:1.6;font-size:14px}.note b{color:var(--y)}
 footer{text-align:center;padding:18px;color:var(--m);font:11px ui-monospace,monospace;border-top:1px solid var(--l)}
+#ok{position:fixed;inset:0;display:none;place-items:center;z-index:50;pointer-events:none}#ok.on{display:grid}
+#ok .ring{width:130px;height:130px;border-radius:50%;background:var(--g);display:grid;place-items:center;animation:pop .5s both,gl 1.4s ease-out}
+#ok svg{width:70px;height:70px}#ok path{stroke:#111;stroke-width:6;fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:60;stroke-dashoffset:60;animation:d2 .5s .3s forwards}
+@keyframes d2{to{stroke-dashoffset:0}}@keyframes gl{0%{box-shadow:0 0 0 0 #5ad39aaa}100%{box-shadow:0 0 0 70px #5ad39a00}}
+.cf{position:fixed;top:50%;left:50%;width:8px;height:12px;border-radius:2px;animation:cf 1.2s ease-out forwards}@keyframes cf{to{transform:translate(var(--x),var(--y)) rotate(var(--r));opacity:0}}
+@keyframes shake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}.res.err{animation:shake .4s}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
 </style></head><body>
 <header><div class="br"><span class="mk">SX</span><div><b>STEG-X</b><small>STEGANOGRAPHY LAB</small></div></div><span class="st"><i></i>LOCAL · PRIVATE</span></header>
@@ -48,9 +54,3 @@ footer{text-align:center;padding:18px;color:var(--m);font:11px ui-monospace,mono
 <nav class="tabs"><button class="on" data-m="hide">Hide data</button><button data-m="extract">Extract</button><button data-m="analyze">Analyze</button></nav>
 <section class="card" id="card"><small id="sm">ENCODING WORKSPACE</small><h2 id="hd">Embed a secret message</h2>
 <label id="kl">Media type<select id="kind">
-<option value="image">Image · PNG</option><option value="audio">Audio · WAV / MP3 / M4A</option><option value="video">Video · MP4 / MOV / AVI</option>
-<option value="document">Document · PDF</option><option value="text">Text · invisible Unicode (.txt)</option><option value="network">Network · PCAP</option></select></label>
-<label>Carrier file<input type="file" id="file"></label>
-<label id="ml">Secret message<textarea id="msg" placeholder="Type the message to embed..."></textarea><small id="cnt" style="color:var(--m)"></small></label>
-<label id="pl">Password (optional · AES-256 lock)<input type="password" id="pw" autocomplete="off" placeholder="Leave empty for no lock"></label>
-<button id="go">Encode &amp; download ↗</button>
